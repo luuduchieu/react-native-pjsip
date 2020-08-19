@@ -84,6 +84,18 @@
         pjsua_media_config_default(&mediaConfig);
         mediaConfig.clock_rate = PJSUA_DEFAULT_CLOCK_RATE;
         mediaConfig.snd_clock_rate = 0;
+        mediaConfig.vid_preview_enable_native = false;
+
+        // // Init video codec config
+        // pjmedia_vid_codec_param param;
+
+        // // Retrieve default codec param for the specified codec.
+        // pjsua_vid_codec_get_param(&codec_id, &param);
+        // NSDictionary * settings = codecSettings[key];
+        // param.dec_fmt.det.vid.size.w = settings[@"video_width"] != nil ? [settings[@"video_width"] integerValue] : 320;
+        // param.dec_fmt.det.vid.size.h = settings[@"video_height"] != nil ? [settings[@"video_height"] integerValue] : 200;
+        
+        // pjsua_vid_codec_set_param(&codec_id, &param);
         
         // Init the pjsua
         status = pjsua_init(&cfg, &log_cfg, &mediaConfig);
