@@ -76,6 +76,10 @@
     }
     
     CGFloat width = wi.size.w, height = wi.size.h;
+    if (wi.is_native == 1) {
+        width = subview.bounds.size.width;
+        height = subview.bounds.size.height;
+    }
 
     CGRect newValue;
     if (width <= 0 || height <= 0) {
