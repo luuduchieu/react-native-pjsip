@@ -103,7 +103,7 @@ public abstract class PjSipVideo extends ViewGroup implements SurfaceHolder.Call
                     int max = Math.max(layoutWidth, layoutHeight);
                     width = max;
                     height = max;
-                } else if (size.getW() / layoutWidth > size.getH() / layoutHeight) {
+                } else if (size.getW() / (float) layoutWidth > size.getH() / (float) layoutHeight) {
                     height = layoutHeight;
                     width = Math.round(((float) layoutHeight / size.getH()) * size.getW());
                 } else {
