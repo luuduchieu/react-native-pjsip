@@ -1,10 +1,12 @@
 package com.carusto.ReactNativePjSip;
 
 import android.app.Service;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -294,11 +297,25 @@ public class PjSipService extends Service {
         // Remove link to account
         mAccounts.remove(account);
 
-        // Remove transport
+        // this should not be done, and is incorrect
+        // this prevents the transport from being used by other accounts
+        // that are added in the future. for example, if you add a TLS account
+        // and then remove it. Next time you add a TLS account it will not 
+        // be able to make calls
+
+        // // Remove transport
+        // try {
+        //     mEndpoint.transportClose(account.getTransportId());
+        // } catch (Exception e) {
+        //     Log.w(TAG, "Failed to close transport for account", e);
+        // }
+
+        // IMO, the proper implementation would be:
         try {
-            mEndpoint.transportClose(account.getTransportId());
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to close transport for account", e);
+            account.shutdown();
+        }
+        catch (Exception e) {
+            Log.w(TAG, "Failed to shutdown account", e);
         }
 
         // Remove account in PjSip
@@ -923,55 +940,70 @@ public class PjSipService extends Service {
     }
 
     void emmitCallReceived(PjSipAccount account, PjSipCall call) {
-        // Automatically decline incoming call when user uses GSM
-        if (!mGSMIdle) {
-            try {
-                call.hangup(new CallOpParam(true));
-            } catch (Exception e) {
-                Log.w(TAG, "Failed to decline incoming call when user uses GSM", e);
+        try {
+            // Automatically decline incoming call when user uses GSM
+            if (!mGSMIdle) {
+                try {
+                    call.hangup(new CallOpParam(true));
+                } catch (Exception e) {
+                    Log.w(TAG, "Failed to decline incoming call when user uses GSM", e);
+                }
+
+                return;
             }
 
-            return;
-        }
+            /**
+            // Automatically start application when incoming call received.
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            Boolean isInForeground = preferences.getBoolean("app_foreground", false);
+            if (!isInForeground) {
+                try {
+                    String ns = getApplicationContext().getPackageName();
+                    String cls = ns + ".MainActivity";
 
-        /**
-        // Automatically start application when incoming call received.
-        if (mAppHidden) {
-            try {
-                String ns = getApplicationContext().getPackageName();
-                String cls = ns + ".MainActivity";
+                    Intent intent = new Intent(getApplicationContext(), Class.forName(cls));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.EXTRA_DOCK_STATE_CAR);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.putExtra("foreground", true);
 
-                Intent intent = new Intent(getApplicationContext(), Class.forName(cls));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.EXTRA_DOCK_STATE_CAR);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                intent.putExtra("foreground", true);
+                    intent.setAction(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);        
+                    intent.putExtra("incoming_call", true);
 
-                startActivity(intent);
-            } catch (Exception e) {
-                Log.w(TAG, "Failed to open application on received call", e);
-            }
-        }
-
-        job(new Runnable() {
-            @Override
-            public void run() {
-                // Brighten screen at least 10 seconds
-                PowerManager.WakeLock wl = mPowerManager.newWakeLock(
-                    PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE | PowerManager.FULL_WAKE_LOCK,
-                    "incoming_call"
-                );
-                wl.acquire(10000);
-
-                if (mCalls.size() == 0) {
-                    mAudioManager.setSpeakerphoneOn(true);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.w(TAG, "Failed to open application on received call", e);
                 }
             }
-        });
-        **/
 
-        // -----
-        mCalls.add(call);
-        mEmitter.fireCallReceivedEvent(call);
+            job(new Runnable() {
+                @Override
+                public void run() {
+                    // Brighten screen at least 10 seconds
+                    PowerManager.WakeLock wl = mPowerManager.newWakeLock(
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE | PowerManager.FULL_WAKE_LOCK,
+                        "incoming_call"
+                    );
+                    wl.acquire(10000);
+
+                    if (mCalls.size() == 0) {
+                        mAudioManager.setSpeakerphoneOn(true);
+                    }
+                }
+            });
+            **/
+
+            // -----
+            mCalls.add(call);
+            mEmitter.fireCallReceivedEvent(call);
+            
+            // Send 180 ringing sip status code
+            // CallOpParam prm = new CallOpParam();
+            // prm.setStatusCode(pjsip_status_code.PJSIP_SC_RINGING);
+            // call.answer(prm);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to handle call received event", e);
+        }
     }
 
     void emmitCallStateChanged(PjSipCall call, OnCallStateParam prm) {
