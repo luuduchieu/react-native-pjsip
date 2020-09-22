@@ -225,6 +225,32 @@ RCT_EXPORT_METHOD(dtmfCall: (int) callId digits: (NSString *) digits callback:(R
     }
 }
 
+RCT_EXPORT_METHOD(showVideo: (int) callId callback:(RCTResponseSenderBlock) callback) {
+    PjSipEndpoint* endpoint = [PjSipEndpoint instance];
+    PjSipCall *call = [endpoint findCall:callId];
+    
+    if (call) {
+        [call showVideo];
+        [endpoint emmitCallChanged:call];
+        callback(@[@TRUE]);
+    } else {
+        callback(@[@FALSE, @"Call not found"]);
+    }
+}
+
+RCT_EXPORT_METHOD(hideVideo: (int) callId callback:(RCTResponseSenderBlock) callback) {
+    PjSipEndpoint* endpoint = [PjSipEndpoint instance];
+    PjSipCall *call = [endpoint findCall:callId];
+    
+    if (call) {
+        [call hideVideo];
+        [endpoint emmitCallChanged:call];
+        callback(@[@TRUE]);
+    } else {
+        callback(@[@FALSE, @"Call not found"]);
+    }
+}
+
 RCT_EXPORT_METHOD(useSpeaker: (int) callId callback:(RCTResponseSenderBlock) callback) {
     [[PjSipEndpoint instance] useSpeaker];
 }

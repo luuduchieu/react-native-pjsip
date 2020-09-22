@@ -20,8 +20,11 @@
 - (void)xferReplaces:(int) destinationCallId;
 - (void)redirect:(NSString*) destination;
 - (void)dtmf:(NSString*) digits;
+- (void)hideVideo;
+- (void)showVideo;
 
-- (void)onStateChanged:(pjsua_call_info) callInfo;
+        - (void)
+onStateChanged:(pjsua_call_info)callInfo;
 - (void)onMediaStateChanged:(pjsua_call_info) callInfo;
 
 - (NSDictionary *)toJsonDictionary:(bool) isSpeaker;
