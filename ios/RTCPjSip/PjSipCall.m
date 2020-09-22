@@ -141,7 +141,7 @@
 
 - (void)hideVideo {
     @try {
-        pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_STOP_TRANSMIT);
+        pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_STOP_TRANSMIT, NULL);
     }
     @catch (NSException *exception) {
         NSLog(@"Unable to hide video: %@", exception);
@@ -150,7 +150,7 @@
 
 - (void)showVideo {
     @try {
-        pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_START_TRANSMIT);
+        pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_START_TRANSMIT, NULL);
     }
     @catch (NSException *exception) {
         NSLog(@"Unable to show video: %@", exception);
