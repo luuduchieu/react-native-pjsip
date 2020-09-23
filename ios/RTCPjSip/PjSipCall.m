@@ -17,6 +17,7 @@
         self.id = id;
         self.isHeld = false;
         self.isMuted = false;
+        self.isVideoShown = false;
     }
     
     return self;
@@ -142,6 +143,7 @@
 - (void)hideVideo {
     @try {
         pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_STOP_TRANSMIT, NULL);
+        self.isVideoShown = false;
     }
     @catch (NSException *exception) {
         NSLog(@"Unable to hide video: %@", exception);
@@ -151,6 +153,7 @@
 - (void)showVideo {
     @try {
         pjsua_call_set_vid_strm(self.id, PJSUA_CALL_VID_STRM_START_TRANSMIT, NULL);
+        self.isVideoShown = true;
     }
     @catch (NSException *exception) {
         NSLog(@"Unable to show video: %@", exception);
@@ -209,6 +212,7 @@
         
         @"held": @(self.isHeld),
         @"muted": @(self.isMuted),
+        @"videoShown": @(self.isVideoShown),
         @"speaker": @(isSpeaker),
         
         @"remoteOfferer": @(info.rem_offerer),

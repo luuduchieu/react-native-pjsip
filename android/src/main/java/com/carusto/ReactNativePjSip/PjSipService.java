@@ -388,6 +388,12 @@ public class PjSipService extends Service {
             case PjActions.ACTION_UNMUTE_CALL:
                 handleCallUnMute(intent);
                 break;
+            case PjActions.ACTION_SHOW_VIDEO_CALL:
+                handleCallShowVideo(intent);
+                break;
+            case PjActions.ACTION_HIDE_VIDEO_CALL:
+                handleCallHideVideo(intent);
+                break;
             case PjActions.ACTION_USE_SPEAKER_CALL:
                 handleCallUseSpeaker(intent);
                 break;
@@ -575,7 +581,7 @@ public class PjSipService extends Service {
         cfg.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
 
         cfg.getVideoConfig().setAutoShowIncoming(true);
-        cfg.getVideoConfig().setAutoTransmitOutgoing(true);
+        cfg.getVideoConfig().setAutoTransmitOutgoing(false);
 
         int cap_dev = cfg.getVideoConfig().getDefaultCaptureDevice();
         mEndpoint.vidDevManager().setCaptureOrient(cap_dev, pjmedia_orient.PJMEDIA_ORIENT_ROTATE_270DEG, true);
@@ -788,6 +794,34 @@ public class PjSipService extends Service {
             // -----
             PjSipCall call = findCall(callId);
             call.unmute();
+
+            mEmitter.fireIntentHandled(intent);
+        } catch (Exception e) {
+            mEmitter.fireIntentHandled(intent, e);
+        }
+    }
+
+    private void handleCallShowVideo(Intent intent) {
+        try {
+            int callId = intent.getIntExtra("call_id", -1);
+
+            // -----
+            PjSipCall call = findCall(callId);
+            call.showVideo();
+
+            mEmitter.fireIntentHandled(intent);
+        } catch (Exception e) {
+            mEmitter.fireIntentHandled(intent, e);
+        }
+    }
+
+    private void handleCallHideVideo(Intent intent) {
+        try {
+            int callId = intent.getIntExtra("call_id", -1);
+
+            // -----
+            PjSipCall call = findCall(callId);
+            call.hideVideo();
 
             mEmitter.fireIntentHandled(intent);
         } catch (Exception e) {

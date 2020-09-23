@@ -30,6 +30,8 @@ public class PjSipCall extends Call {
 
     private boolean isMuted = false;
 
+    private boolean isVideoShown = false;
+
     public PjSipCall(PjSipAccount acc, int call_id) {
         super(acc, call_id);
         this.account = acc;
@@ -131,6 +133,38 @@ public class PjSipCall extends Call {
                 }
             }
         }
+    }
+
+    public void showVideo() throws Exception {
+        if (isVideoShown) {
+            return;
+        }
+
+        isVideoShown = true;
+        try {
+            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_START_TRANSMIT, null);
+        } catch (Exception exc) {
+            Log.e(TAG, "An error occurs while show video", exc);
+        }
+
+        // Emmit changes
+        getService().emmitCallUpdated(this);
+    }
+
+    public void hideVideo() throws Exception {
+        if (!isVideoShown) {
+            return;
+        }
+
+        isVideoShown = false;
+        try {
+            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_STOP_TRANSMIT, null);
+        } catch (Exception exc) {
+            Log.e(TAG, "An error occurs while hide video", exc);
+        }
+
+        // Emmit changes
+        getService().emmitCallUpdated(this);
     }
 
     public void redirect(String destination) throws Exception {
@@ -246,6 +280,7 @@ public class PjSipCall extends Call {
             json.put("totalDuration", info.getTotalDuration().getSec());
             json.put("held", isHeld);
             json.put("muted", isMuted);
+            json.put("videoShown", isVideoShown);
             json.put("speaker", speaker);
 
             try {

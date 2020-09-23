@@ -34,6 +34,8 @@ public class PjActions {
     public static final String ACTION_UNHOLD_CALL = "call_unhold";
     public static final String ACTION_MUTE_CALL = "call_mute";
     public static final String ACTION_UNMUTE_CALL = "call_unmute";
+    public static final String ACTION_SHOW_VIDEO_CALL = "call_show_video";
+    public static final String ACTION_HIDE_VIDEO_CALL = "call_hide_video";
     public static final String ACTION_USE_SPEAKER_CALL = "call_use_speaker";
     public static final String ACTION_USE_EARPIECE_CALL = "call_use_earpiece";
     public static final String ACTION_XFER_CALL = "call_xfer";
@@ -184,6 +186,24 @@ public class PjActions {
     public static Intent createUnMuteCallIntent(int callbackId, int callId, Context context) {
         Intent intent = new Intent(context, PjSipService.class);
         intent.setAction(PjActions.ACTION_UNMUTE_CALL);
+        intent.putExtra("callback_id", callbackId);
+        intent.putExtra("call_id", callId);
+
+        return intent;
+    }
+
+    public static Intent createShowVideoCallIntent(int callbackId, int callId, Context context) {
+        Intent intent = new Intent(context, PjSipService.class);
+        intent.setAction(PjActions.ACTION_SHOW_VIDEO_CALL);
+        intent.putExtra("callback_id", callbackId);
+        intent.putExtra("call_id", callId);
+
+        return intent;
+    }
+
+    public static Intent createHideVideoCallIntent(int callbackId, int callId, Context context) {
+        Intent intent = new Intent(context, PjSipService.class);
+        intent.setAction(PjActions.ACTION_HIDE_VIDEO_CALL);
         intent.putExtra("callback_id", callbackId);
         intent.putExtra("call_id", callId);
 

@@ -6,6 +6,7 @@
 @property int id;
 @property bool isHeld;
 @property bool isMuted;
+@property bool isVideoShown;
 
 + (instancetype)itemConfig:(int)id;
 
