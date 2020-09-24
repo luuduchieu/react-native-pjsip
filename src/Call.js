@@ -9,7 +9,7 @@ export default class Call {
             state, stateText, held, muted, speaker,
             connectDuration, totalDuration,
             remoteOfferer, remoteAudioCount, remoteVideoCount, audioCount, videoCount,
-            lastStatusCode, lastReason, media, provisionalMedia
+            lastStatusCode, lastReason, media, provisionalMedia, videoShown
         }) {
         let remoteNumber = null;
         let remoteName = null;
@@ -40,6 +40,7 @@ export default class Call {
         this._stateText = stateText;
         this._held = held;
         this._muted = muted;
+        this._videoShown = videoShown;
         this._speaker = speaker;
         this._connectDuration = connectDuration;
         this._totalDuration = totalDuration;
@@ -232,6 +233,10 @@ export default class Call {
 
     isMuted() {
         return this._muted;
+    }
+
+    isVideoShown() {
+        return this._videoShown;
     }
 
     isSpeaker() {
