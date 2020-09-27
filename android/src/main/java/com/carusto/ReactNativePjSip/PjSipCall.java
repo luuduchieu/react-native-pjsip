@@ -30,7 +30,7 @@ public class PjSipCall extends Call {
 
     private boolean isMuted = false;
 
-    private boolean isVideoShown = false;
+    private boolean isVideoShown = true;
 
     public PjSipCall(PjSipAccount acc, int call_id) {
         super(acc, call_id);

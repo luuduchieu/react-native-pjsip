@@ -17,7 +17,7 @@
         self.id = id;
         self.isHeld = false;
         self.isMuted = false;
-        self.isVideoShown = false;
+        self.isVideoShown = true;
     }
     
     return self;
