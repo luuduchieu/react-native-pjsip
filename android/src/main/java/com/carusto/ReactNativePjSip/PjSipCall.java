@@ -142,7 +142,8 @@ public class PjSipCall extends Call {
 
         isVideoShown = true;
         try {
-            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_START_TRANSMIT, null);
+            CallVidSetStreamParam callVidSetStreamParam = new CallVidSetStreamParam();
+            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_START_TRANSMIT, callVidSetStreamParam);
         } catch (Exception exc) {
             Log.e(TAG, "An error occurs while show video", exc);
         }
@@ -158,7 +159,8 @@ public class PjSipCall extends Call {
 
         isVideoShown = false;
         try {
-            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_STOP_TRANSMIT, null);
+            CallVidSetStreamParam callVidSetStreamParam = new CallVidSetStreamParam();
+            vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_STOP_TRANSMIT, callVidSetStreamParam);
         } catch (Exception exc) {
             Log.e(TAG, "An error occurs while hide video", exc);
         }
