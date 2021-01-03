@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-VERSION="v2.9.3"
-URL="https://github.com/FastPBX/react-native-pjsip-builder/releases/download/${VERSION}/release.tar.gz"
+VERSION="3.1.0"
+URL="https://github.com/tariq86/react-native-pjsip-builder/releases/download/${VERSION}/release.tar.gz"
 LOCK=".libs.lock"
 DEST=".libs.tar.gz"
 DOWNLOAD=true
